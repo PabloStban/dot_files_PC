@@ -60,10 +60,10 @@ if [[ "$1" == "-c" ]]; then
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
 	  echo $texto | tr -d '\n' | xclip -sel clip
-  # Copiar argumento espesifico
+# Copiar argumento espesifico
   elif [[ $# -eq 2 ]]; then
     # polybar
-    texto=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'")
+    texto=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'" | cut -d "|" -f$2)
 	  echo $texto | tr -d '\n' | xclip -sel clip
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
@@ -102,18 +102,18 @@ mkt(){
 
 ### RECORRE EL SCRIPT SUBNETING
 subneting(){
-  python /home/pablo/Documents/Archivos/Python/Utilities/Subneting.py
+  python /home/$user/Documents/Archivos/Python/Utilities/Subneting.py
 }
 
 ### EJECUTAR EL SCRITP PUERTOS 
 puertos(){
 
   if [ $(id -u) -eq 1000 ]; then
-	  sudo python /home/pablo/Documents/Archivos/Python/Utilities/ports-scanner.py $1 $2
+	  sudo python /home/$user/Documents/Archivos/Python/Utilities/ports-scanner.py $1 $2
   fi
 
   if [ $(id -u) -eq 0 ]; then
-	  python /home/pablo/Documents/Archivos/Python/Utilities/ports-scanner.py $1 $2
+	  python /home/$user/Documents/Archivos/Python/Utilities/ports-scanner.py $1 $2
   fi
 }
 
@@ -135,8 +135,8 @@ target(){
     # qtile
     echo "No target" >/home/$user/.config/qtile/Complementos/target.txt
     # bspwm
-    contenido=$(grep "target=" /home/pablo/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
-    sed -i "0,/$contenido/s/$contenido/No target/" /home/pablo/.config/bin/target.sh
+    contenido=$(grep "target=" /home/$user/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
+    sed -i "0,/$contenido/s/$contenido/No target/" /home/$user/.config/bin/target.sh
   fi
 
 
@@ -144,8 +144,8 @@ target(){
     # qtile
 	  echo "$1" >/home/$user/.config/qtile/Complementos/target.txt
     # bspwm 
-	  contenido=$(grep "target=" /home/pablo/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
-    sed -i "0,/$contenido/s/$contenido/$1/" /home/pablo/.config/bin/target.sh
+	  contenido=$(grep "target=" /home/$user/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
+    sed -i "0,/$contenido/s/$contenido/$1/" /home/$user/.config/bin/target.sh
   fi
 
   if [[ $# -gt 1 ]]; then
