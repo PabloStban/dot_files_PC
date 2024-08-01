@@ -76,7 +76,7 @@ if [[ "$1" == "-m" ]]; then
     # polybar
     palabra=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'" | cut -d"|" -f$2 | grep -oP '\b\w+\b')
     sed -i "s/$palabra/$3/" /home/$user/.config/bin/apuntes.sh 
-    echo $3
+    #echo $3
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
     texto=$(echo $texto | cut -d "|" -f$2 | tr -d '\n')
