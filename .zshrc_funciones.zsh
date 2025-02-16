@@ -28,23 +28,25 @@ fi
 if [[ $# -eq 2 ]]; then
   # Agregar
   if [[ "$1" == "-a" ]]; then
-    # polybar
+    # polybar / waybar
 	  apunte=$2
 	  actual=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g')
 	  apunte_escaped=$(echo $apunte | sed 's/\//\\\//g')
     texto=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'")
 	  sed -i "s/$actual/nota=\'$texto | $apunte_escaped\'/" /home/$user/.config/bin/apuntes.sh
+	  sed -i "s/$actual/nota=\'$texto | $apunte_escaped\'/" /home/$user/.config/waybar/scripts/apuntes.sh
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
 	  echo "$texto | $2" >/home/$user/.config/qtile/Complementos/nota.txt
   fi
   # Reset y agregar 
   if [[ "$1" == "-r" ]]; then
-    # polybar
+    # polybar waybar
 	  apunte=$2
 	  actual=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g')
 	  apunte_escaped=$(echo $apunte | sed 's/\//\\\//g')
 	  sed -i "s/$actual/nota='$apunte_escaped'/" /home/$user/.config/bin/apuntes.sh
+	  sed -i "s/$actual/nota='$apunte_escaped'/" /home/$user/.config/waybar/scripts/apuntes.sh
     # qtile
     echo "$2" >/home/$user/.config/qtile/Complementos/nota.txt
   fi
@@ -54,28 +56,29 @@ fi
 if [[ "$1" == "-c" ]]; then
   # Copiar todo
   if [[ $# -eq 1 ]]; then
-    # polybar
+    # polybar | waybar
     texto=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'")
 	  echo $texto | tr -d '\n' | xclip -sel clip
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
 	  echo $texto | tr -d '\n' | xclip -sel clip
-# Copiar argumento espesifico
+# Copiar argumento especifico
   elif [[ $# -eq 2 ]]; then
-    # polybar
+    # polybar | waybar
     texto=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'" | cut -d "|" -f$2)
-	  echo $texto | tr -d '\n' | xclip -sel clip
+	  echo $texto | tr -d '\n' | wl-copy
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
-	  echo $texto | sed 's/ *| */|/g' |  cut -d "|" -f$2 | tr -d '\n' | xclip -sel clip
+	  echo $texto | sed 's/ *| */|/g' |  cut -d "|" -f$2 | tr -d '\n' | wl-copy
   fi
 fi
 
 if [[ "$1" == "-m" ]]; then
   if [[ $# -eq 3 ]]; then
-    # polybar
+    # polybar | waybar
     palabra=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | tr -d "'" | cut -d"|" -f$2 | grep -oP '\b\w+\b')
     sed -i "s/$palabra/$3/" /home/$user/.config/bin/apuntes.sh 
+    sed -i "s/$palabra/$3/" /home/$user/.config/waybar/scripts/apuntes.sh 
     #echo $3
     # qtile
     texto=$(cat /home/$user/.config/qtile/Complementos/nota.txt)
@@ -87,16 +90,17 @@ fi
 
 # Configuracion sin argumentos setear nota
 if [[ $# -eq 0 ]]; then
-  # polybar
+  # polybar | waybar
 	actual=$(grep "nota=" /home/$user/.config/bin/apuntes.sh | sed 's/\//\\\//g')
   sed -i "s/$actual/nota='Important notes'/" /home/$user/.config/bin/apuntes.sh
+  sed -i "s/$actual/nota='Important notes'/" /home/$user/.config/waybar/scripts/apuntes.sh
   # qtile
   echo "Important notes" >/home/$user/.config/qtile/Complementos/nota.txt
 fi
 }
 
 ### CREA DIRECTORIOS PARA TRABAJAR
-mkt(){
+mkh(){
   mkdir {nmap,scripts,content}
 }
 
@@ -107,7 +111,6 @@ subneting(){
 
 ### EJECUTAR EL SCRITP PUERTOS 
 puertos(){
-
   if [ $(id -u) -eq 1000 ]; then
 	  sudo python /home/$user/Documents/Archivos/Python/Utilities/ports-scanner.py $1 $2
   fi
@@ -134,21 +137,41 @@ target(){
   if [[ $# -eq 0 ]];then
     # qtile
     echo "No target" >/home/$user/.config/qtile/Complementos/target.txt
-    # bspwm
+    # bspwm | waybar
     contenido=$(grep "target=" /home/$user/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
     sed -i "0,/$contenido/s/$contenido/No target/" /home/$user/.config/bin/target.sh
+    sed -i "0,/$contenido/s/$contenido/No target/" /home/$user/.config/waybar/scripts/target.sh
   fi
 
 
   if [[ $# -eq 1 ]]; then
     # qtile
 	  echo "$1" >/home/$user/.config/qtile/Complementos/target.txt
-    # bspwm 
+    # bspwm | waybar
 	  contenido=$(grep "target=" /home/$user/.config/bin/target.sh | sed 's/\//\\\//g' | cut -d"=" -f2 | sed 's/"//g' | head -1)
     sed -i "0,/$contenido/s/$contenido/$1/" /home/$user/.config/bin/target.sh
+    sed -i "0,/$contenido/s/$contenido/$1/" /home/$user/.config/waybar/scripts/target.sh
   fi
 
   if [[ $# -gt 1 ]]; then
     echo "Invalid Arguments!"
+  fi
+}
+
+### CREAR ARCHIVS BASICOS PAGINA WEB
+mkw(){
+  touch index.html javas.jason
+  mkdir {css,fonts}
+  touch ./css/style.css ./css/fonts.css
+}
+
+### PATH SCREENSHOT
+tss(){
+  if [ $(id -u) -eq 1000 ]; then
+	  /home/$user/Documents/Archivos/bash/Utilities/path_screenshot.sh $1 $2 $3 $4
+  fi
+
+  if [ $(id -u) -eq 0 ]; then
+	  /home/$user/Documents/Archivos/bash/Utilities/path_screenshot.sh $1 $2 $3 $4
   fi
 }
